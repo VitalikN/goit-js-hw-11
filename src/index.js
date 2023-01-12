@@ -1,10 +1,7 @@
+import { fetchApi } from './js.js/fetchApi';
+
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { simpleLightbox } from './js.js/simpleLightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-
-import { fetchApi } from './js.js/fetchApi';
-// import axios from 'axios';
-
 let page = 1;
 // let perPage = 40;
 // let search = dog;
@@ -37,8 +34,8 @@ function onSearchForm(evt) {
   }, 1500);
 }
 
-async function markupGallery({ data: { hits, totalHits } }) {
-  const markup = await hits.reduce(
+function markupGallery({ data: { hits, totalHits } }) {
+  const markup = hits.reduce(
     (
       acc,
       { webformatURL, largeImageURL, tags, likes, views, comments, downloads }
@@ -74,6 +71,7 @@ function onLoad() {
 
   fetchApi(page).then(data => {
     console.log(data);
+    markupGallery(data);
     simpleLightbox.refresh();
   });
   //Notify.success( "We're sorry, but you've reached the end of search results.");
