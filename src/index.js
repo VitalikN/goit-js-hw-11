@@ -1,11 +1,12 @@
-import { fetchApi } from './js.js/fetchApi';
-
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { simpleLightbox } from './js.js/simpleLightbox';
+
+import { fetchApi } from './js.js/fetchApi';
+
 let page = 1;
 // let perPage = 40;
 // let search = dog;
-// let inputForm = '';
+let inputForm = '';
 //
 
 const searchForm = document.querySelector('#search-form');
@@ -17,24 +18,28 @@ btnLoadMore.addEventListener('click', onLoad);
 
 function onSearchForm(evt) {
   evt.preventDefault();
-  gallery.innerHTML = '';
 
-  fetchApi(evt.currentTarget.searchQuery.value.trim())
-    .then(data => {
+  btnLoadMore.classList.add('hidden');
+  const newInputForm = evt.currentTarget.searchQuery.value.trim();
+  //
+  if (inputForm !== newInputForm) {
+    inputForm = newInputForm;
+    gallery.innerHTML = '';
+    fetchApi(inputForm).then(data => {
       markupGallery(data);
       simpleLightbox.refresh();
-    })
-    .catch(err => {
-      Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
+      btnLoadMore.classList.remove('hidden');
     });
-  setTimeout(() => {
-    btnLoadMore.classList.remove('hidden');
-  }, 1500);
+  }
+  // else if (!searchForm) {
+  //   Notify.failure(
+  //     'Sorry, there are no images matching your search query. Please try again.'
+  //   );
+  // }
+  // if (inputForm !== newInputForm) {
 }
 
-function markupGallery({ data: { hits, totalHits } }) {
+function markupGallery({ data: { hits, total } }) {
   const markup = hits.reduce(
     (
       acc,
@@ -62,17 +67,21 @@ function markupGallery({ data: { hits, totalHits } }) {
     },
     ''
   );
-  Notify.success(`Hooray! We found ${totalHits} images.`);
+
   gallery.insertAdjacentHTML('beforeend', markup);
+  Notify.success(`Hooray! We found ${total} images.`);
 }
 
 function onLoad() {
   page += 1;
 
-  fetchApi(page).then(data => {
+  fetchApi(searchForm.searchQuery.value.trim(), page).then(data => {
     console.log(data);
     markupGallery(data);
     simpleLightbox.refresh();
   });
+  // if () {
+
+  // }
   //Notify.success( "We're sorry, but you've reached the end of search results.");
 }

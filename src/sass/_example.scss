@@ -38,6 +38,7 @@ input {
   display: flex;
   padding: 15px;
   margin: 0 auto;
+  margin-bottom: 20px;
   flex-direction: column;
 
   background-image: radial-gradient(
@@ -54,6 +55,7 @@ input {
 .hidden {
   display: none;
 }
+
 .gallery {
   display: flex;
   flex-wrap: wrap;
