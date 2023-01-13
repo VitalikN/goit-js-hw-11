@@ -87,6 +87,7 @@ async function onLoad() {
   onMessenge();
 }
 async function onMessenge() {
+  btnLoadMore.classList.add('hidden');
   const res = await fetchApi(
     searchForm.searchQuery.value.trim(),
     page,
@@ -100,7 +101,6 @@ async function onMessenge() {
     }, 1000);
   }
   if (!res.data.hits.length) {
-    btnLoadMore.classList.add('hidden');
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
