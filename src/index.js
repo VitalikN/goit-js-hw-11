@@ -16,28 +16,25 @@ const btnLoadMore = document.querySelector('.load-more');
 searchForm.addEventListener('submit', onSearchForm);
 btnLoadMore.addEventListener('click', onLoad);
 
-// btnLoadMore.classList.add('hidden');
-
 async function onSearchForm(evt) {
   evt.preventDefault();
-  btnLoadMore.classList.add('hidden');
 
   const newInputForm = evt.currentTarget.searchQuery.value.trim();
 
   if (inputForm !== newInputForm) {
     inputForm = newInputForm;
 
-    if (inputForm && pages >= page) {
+    if (newInputForm && pages >= page) {
       gallery.innerHTML = '';
 
       await fetchApi(inputForm).then(data => {
-        console.log(data);
         markupGallery(data);
         simpleLightbox.refresh();
 
-        btnLoadMore.classList.remove('hidden');
-
         onMessenge(evt);
+        setTimeout(() => {
+          btnLoadMore.classList.remove('hidden');
+        }, 0);
       });
     }
   }
@@ -77,30 +74,31 @@ function markupGallery({ data: { hits } }) {
 
 async function onLoad() {
   page += 1;
+
+  onMessenge();
   await fetchApi(searchForm.searchQuery.value.trim(), page, perPage).then(
     data => {
       console.log('102рядок ', data);
       markupGallery(data);
       simpleLightbox.refresh();
+
+      // btnLoadMore.classList.remove('hidden');
     }
   );
-  onMessenge();
 }
 async function onMessenge() {
-  btnLoadMore.classList.add('hidden');
+  // btnLoadMore.classList.add('hidden');
   const res = await fetchApi(
     searchForm.searchQuery.value.trim(),
     page,
     perPage
   );
   pages = Math.ceil(res.data.total / perPage);
-  if (page === 1 && res.data.total >= perPage) {
+  if (page === 1 && res.data.total) {
     Notify.success(`Hooray! We found ${res.data.totalHits} images.`);
-    setTimeout(() => {
-      btnLoadMore.classList.remove('hidden');
-    }, 1000);
   }
-  if (!res.data.hits.length) {
+  if (!res.data.total) {
+    btnLoadMore.classList.add('hidden');
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
