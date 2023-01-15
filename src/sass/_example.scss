@@ -44,21 +44,23 @@ input {
 
 .load-more {
   display: flex;
-  padding: 15px;
+  padding: 10px;
   margin: 0 auto;
   margin-bottom: 20px;
   flex-direction: column;
 
   background-image: radial-gradient(
     circle at 30% 107%,
-    #fdf497 0%,
+    // #fdf497 0%,
     #fdf497 5%,
-    #fd5949 45%,
+    #fd5949 35%,
     #d6249f 60%,
-    #285aeb 100%
+    #285aeb 90%
   );
-
-  border-radius: 6px;
+  border: 1.5px solid #fff;
+  // background-color: #4b76f8;
+  color: #fff;
+  border-radius: 20px;
 }
 .hidden {
   display: none;
