@@ -22,6 +22,7 @@ async function onSearchForm(evt) {
 
   if (inputForm !== newInputForm) {
     inputForm = newInputForm;
+
     onCleanGallery();
   }
   if (inputForm || pages >= page) {
@@ -97,7 +98,6 @@ async function onLoadMarkupGallery() {
   }
 }
 
-//
 async function onGetData() {
   try {
     const res = await fetchApi(inputForm, page, perPage);
