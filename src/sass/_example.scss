@@ -44,23 +44,22 @@ input {
 
 .load-more {
   display: flex;
-  padding: 10px;
+  padding: 5px 10px;
   margin: 0 auto;
   margin-bottom: 20px;
   flex-direction: column;
 
   background-image: radial-gradient(
     circle at 30% 107%,
-    // #fdf497 0%,
-    #fdf497 5%,
+    #fdf497 0%,
     #fd5949 35%,
     #d6249f 60%,
     #285aeb 90%
   );
   border: 1.5px solid #fff;
-  // background-color: #4b76f8;
+
   color: #fff;
-  border-radius: 20px;
+  border-radius: 16px;
 }
 .hidden {
   display: none;
@@ -75,9 +74,6 @@ input {
   padding-top: 100px;
 }
 
-// .photo-card {
-// }
-
 .info {
   display: flex;
   gap: 5px;
@@ -90,8 +86,14 @@ input {
   flex-direction: column;
   font-size: 15px;
 }
+.photo-card {
+  box-shadow: 0px 1px 3px rgb(0 0 0 / 12%), 0px 1px 1px rgb(0 0 0 / 14%),
+    0px 2px 1px rgb(0 0 0 / 20%);
+  border-radius: 6px;
+}
 .photo__img {
   width: 300px;
   height: 150px;
   object-fit: cover;
+  border-radius: 6px 6px 0 0;
 }
