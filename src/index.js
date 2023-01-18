@@ -3,27 +3,17 @@ import { simpleLightbox } from './js.js/simpleLightbox';
 
 import { fetchApi } from './js.js/fetchApi';
 
-// ---------------
-function scroll(gallery) {
-  const { height: cardHeight } =
-    gallery.firstElementChild.getBoundingClientRect();
-
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
-}
-
 const searchForm = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
-// const btnLoadMore = document.querySelector('.load-more');
+const btnLoadMore = document.querySelector('.load-more');
 const guard = document.querySelector('.js-guard');
+const checkbox = document.querySelector('.js-checkbox');
 
 let pages = 1;
 let page = 1;
 let perPage = 40;
-
 let inputForm = '';
+let infiniteScroll;
 
 let options = {
   root: null,
@@ -34,7 +24,18 @@ let options = {
 let observer = new IntersectionObserver(onInfiniteScroll, options);
 
 searchForm.addEventListener('submit', onSearchForm);
-// btnLoadMore.addEventListener('click', onLoadMarkupGallery);
+btnLoadMore.addEventListener('click', onLoadMarkupGallery);
+checkbox.addEventListener('change', setInfiniteScroll);
+
+// function scroll(gallery) {
+//   const { height: cardHeight } =
+//     gallery.firstElementChild.getBoundingClientRect();
+
+//   window.scrollBy({
+//     top: cardHeight * 2,
+//     behavior: 'smooth',
+//   });
+// }
 
 async function onSearchForm(evt) {
   evt.preventDefault();
@@ -42,23 +43,20 @@ async function onSearchForm(evt) {
 
   if (inputForm !== newInputForm) {
     inputForm = newInputForm;
-
+    pages = 1;
     onCleanGallery();
+    observer.unobserve(guard);
   }
-  if (inputForm || pages >= page) {
-    // await onLoadMarkupGallery();
-    onInfiniteScroll;
-    observer.observe(guard);
+  if (inputForm && pages >= page) {
+    infiniteScroll ? observer.observe(guard) : await onLoadMarkupGallery();
+
     simpleLightbox.refresh();
-  }
-  if (!newInputForm) {
-    // btnLoadMore.classList.add('hidden');
   }
 }
 
 function onCleanGallery() {
   gallery.innerHTML = '';
-  // btnLoadMore.classList.add('hidden');
+  btnLoadMore.classList.add('hidden');
   page = 1;
 }
 
@@ -108,18 +106,19 @@ function onMessenge(searchMessenge, page, pages) {
   }
 }
 
-// async function onLoadMarkupGallery() {
-//   const res = await onGetData();
-//   // btnLoadMore.classList.add('hidden');
-//   markupGallery(res);
-//   simpleLightbox.refresh();
+async function onLoadMarkupGallery() {
+  const res = await onGetData();
+  btnLoadMore.classList.add('hidden');
+  markupGallery(res);
+  simpleLightbox.refresh();
 
-//   if (pages > page) {
-//     // btnLoadMore.classList.remove('hidden');
+  if (pages > page && !infiniteScroll) scroll(gallery);
 
-//     page += 1;
-//   }
-// }
+  if (pages > page && !infiniteScroll) {
+    btnLoadMore.classList.remove('hidden');
+  }
+  page += 1;
+}
 
 async function onGetData() {
   try {
@@ -142,8 +141,14 @@ function onInfiniteScroll(entries, observer) {
       page += 1;
       if (pages < page) {
         observer.unobserve(guard);
-        scroll(gallery);
       }
     }
   });
+}
+
+function setInfiniteScroll(evt) {
+  infiniteScroll = evt.currentTarget.checked;
+
+  !infiniteScroll ? observer.unobserve(guard) : observer.observe(guard);
+  if (pages > 1 && infiniteScroll) btnLoadMore.classList.add('hidden');
 }

@@ -23,14 +23,15 @@ body {
     #285aeb 100%
   );
   width: 100%;
-  padding: 30px;
+  padding: 20px;
 }
-input {
+.search-input {
   height: 30px;
   padding: 10px;
   border-radius: 14px;
   border: 1.5px solid #fff;
   margin-right: 10px;
+  margin-left: auto;
   outline: none;
   box-shadow: 0px 1px 3px rgb(0 0 0 / 12%), 0px 1px 1px rgb(0 0 0 / 14%),
     0px 2px 1px rgb(0 0 0 / 20%);
@@ -42,7 +43,18 @@ input {
   box-shadow: 0px 1px 3px rgb(0 0 0 / 12%), 0px 1px 1px rgb(0 0 0 / 14%),
     0px 2px 1px rgb(0 0 0 / 20%);
   border: none;
-  padding: 0 20px;
+  padding: 5px 20px;
+  margin-right: auto;
+}
+.check-box {
+  display: flex;
+
+  font-size: 15px;
+  align-items: center;
+  color: #fff;
+}
+.input-checkbox {
+  margin-left: 10px;
 }
 
 .load-more {
