@@ -3,18 +3,38 @@ import { simpleLightbox } from './js.js/simpleLightbox';
 
 import { fetchApi } from './js.js/fetchApi';
 
+// ---------------
+function scroll(gallery) {
+  const { height: cardHeight } =
+    gallery.firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+}
+
+const searchForm = document.querySelector('#search-form');
+const gallery = document.querySelector('.gallery');
+// const btnLoadMore = document.querySelector('.load-more');
+const guard = document.querySelector('.js-guard');
+
 let pages = 1;
 let page = 1;
 let perPage = 40;
 
 let inputForm = '';
 
-const searchForm = document.querySelector('#search-form');
-const gallery = document.querySelector('.gallery');
-const btnLoadMore = document.querySelector('.load-more');
+let options = {
+  root: null,
+  rootMargin: '300px',
+  threshold: 1.0,
+};
+
+let observer = new IntersectionObserver(onInfiniteScroll, options);
 
 searchForm.addEventListener('submit', onSearchForm);
-btnLoadMore.addEventListener('click', onLoadMarkupGallery);
+// btnLoadMore.addEventListener('click', onLoadMarkupGallery);
 
 async function onSearchForm(evt) {
   evt.preventDefault();
@@ -26,17 +46,19 @@ async function onSearchForm(evt) {
     onCleanGallery();
   }
   if (inputForm || pages >= page) {
-    await onLoadMarkupGallery();
+    // await onLoadMarkupGallery();
+    onInfiniteScroll;
+    observer.observe(guard);
     simpleLightbox.refresh();
   }
   if (!newInputForm) {
-    btnLoadMore.classList.add('hidden');
+    // btnLoadMore.classList.add('hidden');
   }
 }
 
 function onCleanGallery() {
   gallery.innerHTML = '';
-  btnLoadMore.classList.add('hidden');
+  // btnLoadMore.classList.add('hidden');
   page = 1;
 }
 
@@ -86,17 +108,18 @@ function onMessenge(searchMessenge, page, pages) {
   }
 }
 
-async function onLoadMarkupGallery() {
-  const res = await onGetData();
-  btnLoadMore.classList.add('hidden');
-  markupGallery(res);
-  simpleLightbox.refresh();
+// async function onLoadMarkupGallery() {
+//   const res = await onGetData();
+//   // btnLoadMore.classList.add('hidden');
+//   markupGallery(res);
+//   simpleLightbox.refresh();
 
-  if (pages > page) {
-    btnLoadMore.classList.remove('hidden');
-    page += 1;
-  }
-}
+//   if (pages > page) {
+//     // btnLoadMore.classList.remove('hidden');
+
+//     page += 1;
+//   }
+// }
 
 async function onGetData() {
   try {
@@ -108,4 +131,19 @@ async function onGetData() {
   } catch (error) {
     console.log(error);
   }
+}
+
+function onInfiniteScroll(entries, observer) {
+  entries.forEach(async entrie => {
+    if (entrie.isIntersecting && inputForm) {
+      const res = await onGetData();
+      markupGallery(res);
+      simpleLightbox.refresh();
+      page += 1;
+      if (pages < page) {
+        observer.unobserve(guard);
+        scroll(gallery);
+      }
+    }
+  });
 }
