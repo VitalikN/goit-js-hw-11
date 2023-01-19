@@ -27,16 +27,6 @@ searchForm.addEventListener('submit', onSearchForm);
 btnLoadMore.addEventListener('click', onLoadMarkupGallery);
 checkbox.addEventListener('change', setInfiniteScroll);
 
-// function scroll(gallery) {
-//   const { height: cardHeight } =
-//     gallery.firstElementChild.getBoundingClientRect();
-
-//   window.scrollBy({
-//     top: cardHeight * 2,
-//     behavior: 'smooth',
-//   });
-// }
-
 async function onSearchForm(evt) {
   evt.preventDefault();
   const newInputForm = evt.currentTarget.searchQuery.value.trim();
