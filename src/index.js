@@ -2,6 +2,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { simpleLightbox } from './js.js/simpleLightbox';
 
 import { fetchApi } from './js.js/fetchApi';
+import { markupGallery } from './js.js/markup';
 
 const searchForm = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
@@ -50,38 +51,6 @@ function onCleanGallery() {
   page = 1;
 }
 
-function markupGallery(res) {
-  const markup = res.reduce(
-    (
-      acc,
-      { webformatURL, largeImageURL, tags, likes, views, comments, downloads }
-    ) => {
-      return (acc += `<div class="photo-card">
-    <a  class="photo__link" href="${largeImageURL}">
-  <img  class="photo__img" src="${webformatURL}" alt="${tags}" loading="lazy"  />
-  </a>
-  <div class="info">
-    <p class="info-item">
-      <b>Likes</b>${likes}
-    </p>
-    <p class="info-item">
-      <b>Views</b>${views}
-    </p>
-    <p class="info-item">
-      <b>Comments</b>${comments}
-    </p>
-    <p class="info-item">
-      <b>Downloads</b>${downloads}
-    </p>
-  </div>
-</div>`);
-    },
-    ''
-  );
-
-  gallery.insertAdjacentHTML('beforeend', markup);
-}
-
 function onMessenge(searchMessenge, page, pages) {
   if (page === 1 && searchMessenge.hits.length) {
     Notify.success(`Hooray! We found ${searchMessenge.totalHits} images.`);
@@ -99,7 +68,7 @@ function onMessenge(searchMessenge, page, pages) {
 async function onLoadMarkupGallery() {
   const res = await onGetData();
   btnLoadMore.classList.add('hidden');
-  markupGallery(res);
+  markupGallery(res, gallery);
   simpleLightbox.refresh();
 
   if (pages > page && !infiniteScroll) scroll(gallery);
@@ -126,7 +95,7 @@ function onInfiniteScroll(entries, observer) {
   entries.forEach(async entrie => {
     if (entrie.isIntersecting && inputForm) {
       const res = await onGetData();
-      markupGallery(res);
+      markupGallery(res, gallery);
       simpleLightbox.refresh();
       page += 1;
       if (pages < page) {
